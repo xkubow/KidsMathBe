@@ -25,12 +25,11 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function setParentSession(token: string, id: string, name: string) {
+    exitStudentMode()
     parentToken.value = token
-    studentToken.value = null
     userId.value = id
     displayName.value = name
     localStorage.setItem('parentToken', token)
-    localStorage.removeItem('studentToken')
     localStorage.setItem('userId', id)
     localStorage.setItem('displayName', name)
   }
@@ -51,6 +50,13 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('studentToken')
     localStorage.removeItem('activeStudentId')
     localStorage.removeItem('activeStudentName')
+    localStorage.removeItem('activeStudentAvatar')
+  }
+
+  async function switchToParent() {
+    const { data } = await api.post('/api/auth/switch-to-parent')
+    exitStudentMode()
+    setParentSession(data.token, data.userId, data.displayName)
   }
 
   function logout() {
@@ -78,6 +84,7 @@ export const useAuthStore = defineStore('auth', () => {
     setParentSession,
     setStudentSession,
     exitStudentMode,
+    switchToParent,
     logout
   }
 })

@@ -7,6 +7,9 @@
           <option value="cs">Čeština</option>
           <option value="en">English</option>
         </select>
+        <button v-if="auth.isStudentMode" class="btn btn-ghost" @click="switchToParent">
+          ← {{ t('parentDashboard') }}
+        </button>
         <button v-if="auth.isAuthenticated" class="btn btn-ghost" @click="logout">
           {{ t('logout') }}
         </button>
@@ -39,6 +42,11 @@ const showHeader = computed(() => !['login', 'register'].includes(route.name as 
 
 function saveLocale() {
   setLocale(locale.value)
+}
+
+async function switchToParent() {
+  await auth.switchToParent()
+  router.push({ name: 'dashboard' })
 }
 
 function logout() {

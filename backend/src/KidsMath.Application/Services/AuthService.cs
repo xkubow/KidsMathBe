@@ -41,4 +41,12 @@ public class AuthService(IKidsMathDbContext db, JwtTokenService jwt)
 
     public async Task<User?> GetUserAsync(Guid userId, CancellationToken ct = default) =>
         await db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId, ct);
+
+    public async Task<(User User, string Token)?> SwitchToParentAsync(Guid userId, CancellationToken ct = default)
+    {
+        var user = await db.Users.FirstOrDefaultAsync(u => u.Id == userId, ct);
+        if (user is null) return null;
+
+        return (user, jwt.CreateParentToken(user.Id, user.Email, user.DisplayName));
+    }
 }

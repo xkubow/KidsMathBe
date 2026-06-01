@@ -7,7 +7,7 @@
     <input v-model="pin" type="password" maxlength="6" inputmode="numeric" class="pin-input" />
     <p v-if="error" class="feedback-warn card-shake">{{ error }}</p>
     <button class="btn btn-primary btn-block" @click="verify">{{ t('startPractice') }}</button>
-    <button class="btn btn-ghost btn-block" @click="router.push('/dashboard')">← {{ t('parentDashboard') }}</button>
+    <button class="btn btn-ghost btn-block" @click="backToParent">← {{ t('parentDashboard') }}</button>
   </div>
 </template>
 
@@ -28,6 +28,11 @@ const error = ref('')
 const studentId = (route.query.studentId as string) ?? auth.activeStudentId ?? ''
 const studentName = (route.query.name as string) ?? auth.activeStudentName ?? ''
 const avatarKey = (route.query.avatar as string) ?? 'fox'
+
+async function backToParent() {
+  if (auth.isStudentMode) await auth.switchToParent()
+  router.push('/dashboard')
+}
 
 async function verify() {
   if (!studentId) {
