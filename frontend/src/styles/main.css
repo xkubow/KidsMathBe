@@ -1,0 +1,185 @@
+:root {
+  --bg: #f0f7ff;
+  --card: #ffffff;
+  --primary: #4f46e5;
+  --primary-dark: #3730a3;
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --text: #1e293b;
+  --muted: #64748b;
+  --radius: 16px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: linear-gradient(160deg, #e0f2fe 0%, #fdf4ff 50%, #fef9c3 100%);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--card);
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+.app-header h1 { margin: 0; font-size: 1.5rem; }
+.header-actions { display: flex; gap: .75rem; align-items: center; }
+.app-main { flex: 1; padding: 1.5rem; max-width: 720px; margin: 0 auto; width: 100%; }
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(79, 70, 229, .12);
+  margin-bottom: 1rem;
+}
+
+.btn {
+  border: none;
+  border-radius: 999px;
+  padding: .85rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-ghost { background: transparent; color: var(--primary); }
+.btn-success { background: var(--success); color: white; }
+.btn-block { width: 100%; display: block; margin-top: .5rem; }
+
+input, select {
+  width: 100%;
+  padding: .85rem 1rem;
+  font-size: 1.1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: .75rem;
+}
+
+label { display: block; font-weight: 600; margin-bottom: .25rem; }
+
+.big-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.grid { display: grid; gap: 1rem; }
+.grid-2 { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+
+.badge {
+  display: inline-block;
+  background: #fef3c7;
+  color: #92400e;
+  padding: .5rem .75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  margin: .25rem;
+}
+
+.feedback-ok { color: var(--success); font-size: 1.25rem; font-weight: 700; text-align: center; }
+.feedback-warn { color: var(--warning); font-size: 1.1rem; text-align: center; }
+
+.progress-bar {
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--primary);
+  transition: width .3s;
+}
+
+.lang-select { width: auto; margin: 0; }
+
+.muted { color: var(--muted); font-size: .95rem; }
+
+.student-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: .75rem;
+}
+.student-avatar { font-size: 2.75rem; line-height: 1; }
+
+.avatar-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
+.avatar-option {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background: #f1f5f9;
+  cursor: pointer;
+  transition: transform .2s, border-color .2s;
+}
+.avatar-option.selected {
+  border-color: var(--primary);
+  transform: scale(1.08);
+}
+.avatar-emoji { font-size: 1.75rem; }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes bounce-in {
+  0% { transform: scale(.5); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}
+@keyframes pulse-success {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, .4); }
+  50% { box-shadow: 0 0 0 12px rgba(22, 163, 74, 0); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.animate-pop { animation: pop-in .35s ease-out; }
+.animate-bounce-in { animation: bounce-in .5s ease-out; }
+.card-success { animation: pulse-success .6s ease-out; }
+.card-shake { animation: shake .35s ease-out; }
+
+.feedback-burst {
+  text-align: center;
+  font-size: 3rem;
+  margin: .5rem 0;
+  animation: bounce-in .4s ease-out;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity .25s, transform .25s;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+@media print {
+  .app-header, .no-print, .btn { display: none !important; }
+  body { background: white; }
+  .app-main { max-width: 100%; padding: 0; }
+}
