@@ -1,8 +1,8 @@
 :root {
   --bg: #f0f7ff;
   --card: #ffffff;
-  --primary: #4f46e5;
-  --primary-dark: #3730a3;
+  --primary: #0ea5e9;
+  --primary-dark: #0284c7;
   --success: #16a34a;
   --warning: #f59e0b;
   --text: #1e293b;
@@ -37,7 +37,7 @@ body {
   background: var(--card);
   border-radius: var(--radius);
   padding: 1.5rem;
-  box-shadow: 0 8px 24px rgba(79, 70, 229, .12);
+  box-shadow: 0 8px 24px rgba(14, 165, 233, .12);
   margin-bottom: 1rem;
 }
 

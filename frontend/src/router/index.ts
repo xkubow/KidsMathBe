@@ -8,6 +8,7 @@ const router = createRouter({
     { path: '/login', name: 'login', component: () => import('../pages/LoginPage.vue') },
     { path: '/register', name: 'register', component: () => import('../pages/RegisterPage.vue') },
     { path: '/dashboard', name: 'dashboard', component: () => import('../pages/ParentDashboardPage.vue'), meta: { requiresAuth: true } },
+    { path: '/dashboard/add-child', name: 'parent-add-child', component: () => import('../pages/AddChildPage.vue'), meta: { requiresAuth: true } },
     { path: '/dashboard/child/:studentId/sessions', name: 'parent-session-history', component: () => import('../pages/ParentSessionHistoryPage.vue'), meta: { requiresAuth: true } },
     { path: '/dashboard/session/:sessionId', name: 'parent-session-detail', component: () => import('../pages/ParentSessionDetailPage.vue'), meta: { requiresAuth: true } },
     { path: '/student/select', name: 'student-select', component: () => import('../pages/StudentSelectPage.vue'), meta: { requiresAuth: true } },
