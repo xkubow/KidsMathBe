@@ -23,6 +23,7 @@ public class ExerciseSessionService(
         Guid studentId,
         Guid taskDefinitionId,
         int? questionCount,
+        TemplateTheme? theme = null,
         CancellationToken ct = default)
     {
         var definition = await db.MathTaskDefinitions.FirstOrDefaultAsync(d => d.Id == taskDefinitionId && d.IsActive, ct);
@@ -30,7 +31,7 @@ public class ExerciseSessionService(
         if (definition is null || student is null) return null;
 
         var count = questionCount ?? exerciseOptions.Value.DefaultQuestionCount;
-        var theme = ThemeSelector.PickForStudent(student, random);
+        var selectedTheme = ThemeSelector.Resolve(theme, student, random);
         var session = new ExerciseSession
         {
             Id = Guid.NewGuid(),
@@ -43,14 +44,14 @@ public class ExerciseSessionService(
             CorrectAnswers = 0,
             WrongAnswers = 0,
             Status = SessionStatus.InProgress,
-            TemplateThemeId = (int)theme
+            TemplateThemeId = (int)selectedTheme
         };
         db.ExerciseSessions.Add(session);
 
         var questions = sessionQuestionGenerator.Generate(definition, count);
         for (var i = 0; i < questions.Count; i++)
         {
-            var themed = QuestionThemeFormatter.ApplyTheme(theme, questions[i]);
+            var themed = QuestionThemeFormatter.ApplyTheme(selectedTheme, questions[i]);
             db.ExerciseAttempts.Add(new ExerciseAttempt
             {
                 Id = Guid.NewGuid(),

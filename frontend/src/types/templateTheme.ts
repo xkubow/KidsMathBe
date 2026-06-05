@@ -12,3 +12,15 @@ export function parseTemplateTheme(value: unknown): TemplateTheme {
 
   return 'Default'
 }
+
+const practiceThemeKey = (studentId: string) => `practiceTheme:${studentId}`
+
+export function loadPracticeTheme(studentId: string | null | undefined): TemplateTheme {
+  if (!studentId) return 'Default'
+  return parseTemplateTheme(localStorage.getItem(practiceThemeKey(studentId)))
+}
+
+export function savePracticeTheme(studentId: string | null | undefined, theme: TemplateTheme) {
+  if (!studentId) return
+  localStorage.setItem(practiceThemeKey(studentId), theme)
+}

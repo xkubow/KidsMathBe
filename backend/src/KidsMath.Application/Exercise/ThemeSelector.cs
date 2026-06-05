@@ -12,6 +12,9 @@ public static class ThemeSelector
         TemplateTheme.Animals
     ];
 
+    public static TemplateTheme Resolve(TemplateTheme? requestedTheme, StudentProfile student, IRandomNumberSource random) =>
+        requestedTheme ?? PickForStudent(student, random);
+
     public static TemplateTheme PickForStudent(StudentProfile student, IRandomNumberSource random)
     {
         if (!string.IsNullOrWhiteSpace(student.AvatarKey))

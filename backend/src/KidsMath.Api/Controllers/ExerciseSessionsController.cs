@@ -16,7 +16,8 @@ public class ExerciseSessionsController(ExerciseSessionService sessionService, S
     public async Task<ActionResult<ExerciseSessionResponse>> Start(StartSessionRequest request, [FromQuery] string lang = "cs", CancellationToken ct = default)
     {
         if (!await CanAccessStudentAsync(request.StudentProfileId, ct)) return Forbid();
-        var session = await sessionService.StartSessionAsync(request.StudentProfileId, request.TaskDefinitionId, request.QuestionCount, ct);
+        var session = await sessionService.StartSessionAsync(
+            request.StudentProfileId, request.TaskDefinitionId, request.QuestionCount, request.Theme, ct);
         if (session is null) return NotFound();
         return Ok(ExerciseSessionMapper.ToResponse(session, lang, sessionService.MaxAttemptsPerQuestion));
     }
