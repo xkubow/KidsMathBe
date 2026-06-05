@@ -19,7 +19,6 @@
     <button class="btn btn-primary btn-block" @click="router.push({ name: 'worksheet', params: { sessionId: route.params.sessionId } })">
       🖨️ {{ t('printWorksheet') }}
     </button>
-    <button class="btn btn-ghost btn-block" @click="router.push('/student/home')">{{ t('backHome') }}</button>
   </div>
 </template>
 

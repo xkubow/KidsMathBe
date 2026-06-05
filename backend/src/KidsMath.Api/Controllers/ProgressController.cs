@@ -1,5 +1,7 @@
 using KidsMath.Api.Extensions;
+using KidsMath.Api.Mapping;
 using KidsMath.Application.Services;
+using KidsMath.Contracts.Progress;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,55 +13,19 @@ namespace KidsMath.Api.Controllers;
 public class ProgressController(ProgressService progressService, StudentSummaryService summaryService, StudentService studentService) : ControllerBase
 {
     [HttpGet("progress")]
-    public async Task<ActionResult<object>> GetProgress(Guid studentId, CancellationToken ct)
+    public async Task<ActionResult<IReadOnlyList<StudentTaskProgressResponse>>> GetProgress(Guid studentId, CancellationToken ct)
     {
         if (!await CanAccessAsync(studentId, ct)) return Forbid();
         var progress = await progressService.GetProgressAsync(studentId, ct);
-        return Ok(progress.Select(p => new
-        {
-            p.Grade,
-            taskType = p.TaskType.ToString(),
-            p.DifficultyLevel,
-            p.TotalAttempts,
-            p.CorrectAttempts,
-            p.WrongAttempts,
-            p.BestScore,
-            p.CurrentStreak,
-            p.LastPracticedAtUtc
-        }));
+        return Ok(progress.Select(ProgressMapper.ToResponse).ToList());
     }
 
     [HttpGet("summary")]
-    public async Task<ActionResult<object>> GetSummary(Guid studentId, [FromQuery] string lang = "cs", CancellationToken ct = default)
+    public async Task<ActionResult<StudentSummaryResponse>> GetSummary(Guid studentId, [FromQuery] string lang = "cs", CancellationToken ct = default)
     {
         if (!await CanAccessAsync(studentId, ct)) return Forbid();
         var summary = await summaryService.GetSummaryAsync(studentId, ct);
-        return Ok(new
-        {
-            summary.StudentId,
-            summary.Name,
-            summary.Grade,
-            summary.TotalAnswered,
-            summary.TotalCorrect,
-            progress = summary.Progress.Select(p => new
-            {
-                p.Grade,
-                taskType = p.TaskType.ToString(),
-                p.DifficultyLevel,
-                p.TotalAttempts,
-                p.CorrectAttempts,
-                p.BestScore,
-                p.CurrentStreak
-            }),
-            achievements = summary.Achievements.Select(a => new
-            {
-                a.UnlockedAtUtc,
-                code = a.Achievement.Code,
-                displayName = lang.StartsWith("en") ? a.Achievement.DisplayNameEn : a.Achievement.DisplayNameCs,
-                description = lang.StartsWith("en") ? a.Achievement.DescriptionEn : a.Achievement.DescriptionCs
-            }),
-            recentSessions = summary.RecentSessions
-        });
+        return Ok(ProgressMapper.ToSummaryResponse(summary, lang));
     }
 
     private async Task<bool> CanAccessAsync(Guid studentId, CancellationToken ct)

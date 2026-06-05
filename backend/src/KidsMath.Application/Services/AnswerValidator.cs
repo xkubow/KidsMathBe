@@ -30,11 +30,32 @@ public static class AnswerValidator
             if (oddGroup.Contains(aliasStudent) && oddGroup.Contains(aliasCorrect)) return true;
         }
 
-        if (decimal.TryParse(normalizedStudent, out var s) && decimal.TryParse(normalizedCorrect, out var c))
+        if (TryParseNumeric(normalizedStudent, out var s) && TryParseNumeric(normalizedCorrect, out var c))
         {
-            return s == c;
+            return Math.Abs(s - c) < 1e-2;
         }
 
+        return false;
+    }
+
+    private static bool TryParseNumeric(string value, out double result)
+    {
+        if (double.TryParse(value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out result))
+        {
+            return true;
+        }
+
+        var parts = value.Split('/');
+        if (parts.Length == 2 &&
+            double.TryParse(parts[0], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var numerator) &&
+            double.TryParse(parts[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var denominator) &&
+            denominator != 0)
+        {
+            result = numerator / denominator;
+            return true;
+        }
+
+        result = 0;
         return false;
     }
 

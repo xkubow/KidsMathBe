@@ -15,6 +15,7 @@ public class ExerciseSession
     public int CorrectAnswers { get; set; }
     public int WrongAnswers { get; set; }
     public SessionStatus Status { get; set; }
+    public int TemplateThemeId { get; set; }
 
     public StudentProfile StudentProfile { get; set; } = null!;
     public ICollection<ExerciseAttempt> Attempts { get; set; } = new List<ExerciseAttempt>();

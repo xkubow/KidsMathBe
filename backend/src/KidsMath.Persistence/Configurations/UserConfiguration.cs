@@ -15,5 +15,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.PasswordHash).IsRequired();
         builder.Property(x => x.DisplayName).HasMaxLength(200).IsRequired();
         builder.Property(x => x.CreatedAtUtc).IsRequired();
+        builder.Property(x => x.IsAdmin).HasDefaultValue(false);
     }
 }

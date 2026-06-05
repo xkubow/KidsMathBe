@@ -15,4 +15,10 @@ public static class ClaimsPrincipalExtensions
 
     public static bool IsStudentToken(this ClaimsPrincipal user) =>
         user.FindFirstValue("token_type") == "student";
+
+    public static bool IsAdminToken(this ClaimsPrincipal user) =>
+        user.FindFirstValue("token_type") == "admin";
+
+    public static bool IsAdminUser(this ClaimsPrincipal user) =>
+        user.FindFirstValue("is_admin") == "true";
 }

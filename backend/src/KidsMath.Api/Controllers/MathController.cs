@@ -1,5 +1,6 @@
+using KidsMath.Api.Mapping;
 using KidsMath.Application.Abstractions;
-using KidsMath.Contracts.Localization;
+using KidsMath.Contracts.MathTasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace KidsMath.Api.Controllers;
 public class MathController(IKidsMathDbContext db) : ControllerBase
 {
     [HttpGet("task-definitions")]
-    public async Task<ActionResult<IEnumerable<object>>> GetDefinitions(
+    public async Task<ActionResult<IReadOnlyList<MathTaskDefinitionResponse>>> GetDefinitions(
         [FromQuery] int? grade,
         [FromQuery] string? taskType,
         [FromQuery] string lang = "cs",
@@ -26,15 +27,6 @@ public class MathController(IKidsMathDbContext db) : ControllerBase
         }
 
         var items = await query.OrderBy(d => d.Grade).ThenBy(d => d.TaskType).ThenBy(d => d.DifficultyLevel).ToListAsync(ct);
-        return Ok(items.Select(d => new
-        {
-            d.Id,
-            d.Grade,
-            taskType = d.TaskType.ToString(),
-            d.DifficultyLevel,
-            displayName = new LocalizedText(d.DisplayNameCs, d.DisplayNameEn).For(lang),
-            description = d.DescriptionCs is null ? null : new LocalizedText(d.DescriptionCs, d.DescriptionEn ?? d.DescriptionCs).For(lang),
-            d.ConfigJson
-        }));
+        return Ok(items.Select(d => MathTaskDefinitionMapper.ToPublicResponse(d, lang)).ToList());
     }
 }

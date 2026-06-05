@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddSingleton<IExerciseGenerator, GeometryBasicExerciseGenerator>();
         services.AddSingleton<IExerciseGenerator, WordProblemExerciseGenerator>();
         services.AddSingleton<ExerciseGeneratorFactory>();
+        services.AddScoped<SessionQuestionGenerator>();
 
         services.AddScoped<AuthService>();
         services.AddScoped<StudentService>();
@@ -33,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<ProgressService>();
         services.AddScoped<AchievementService>();
         services.AddScoped<StudentSummaryService>();
+        services.AddScoped<MathTaskDefinitionAdminService>();
         services.AddScoped<JwtTokenService>();
 
         return services;

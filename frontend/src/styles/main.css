@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --bg: #f0f7ff;
   --card: #ffffff;
@@ -8,7 +12,7 @@
   --text: #1e293b;
   --muted: #64748b;
   --radius: 16px;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: 'Nunito', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -21,6 +25,16 @@ body {
 }
 
 .app-shell { min-height: 100vh; display: flex; flex-direction: column; }
+
+.flash-banner {
+  padding: .75rem 1.5rem;
+  background: #fef3c7;
+  color: #92400e;
+  border-bottom: 1px solid #fcd34d;
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+}
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -32,6 +46,19 @@ body {
 .app-header h1 { margin: 0; font-size: 1.5rem; }
 .header-actions { display: flex; gap: .75rem; align-items: center; }
 .app-main { flex: 1; padding: 1.5rem; max-width: 720px; margin: 0 auto; width: 100%; }
+
+.page-back-nav { margin-bottom: 0.75rem; }
+.page-back-btn { margin: 0; padding: 0.5rem 0; font-size: 1rem; }
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+}
 
 .card {
   background: var(--card);
@@ -176,6 +203,43 @@ label { display: block; font-weight: 600; margin-bottom: .25rem; }
 .page-leave-to {
   opacity: 0;
   transform: translateY(8px);
+}
+
+.admin-subtitle { color: var(--muted); margin-top: 0; }
+.admin-task-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: .75rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+.admin-task-meta { display: block; color: var(--muted); font-size: .9rem; margin-top: .25rem; }
+.admin-badge-inactive {
+  display: inline-block;
+  margin-top: .35rem;
+  padding: .15rem .5rem;
+  border-radius: 6px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: .8rem;
+}
+.admin-editor { margin-top: 1rem; }
+.admin-static-section { padding: 1rem; margin-top: 1rem; }
+.admin-static-section h4 { margin: 0 0 .5rem 0; }
+.admin-static-row { align-items: flex-start; }
+.admin-static-fields { flex: 1; }
+.task-config-form h4 { margin: 0 0 .75rem 0; }
+.admin-checkbox { display: flex; align-items: center; gap: .5rem; margin-bottom: 1rem; }
+.admin-checkbox input { width: auto; margin: 0; }
+textarea {
+  width: 100%;
+  padding: .85rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: .75rem;
+  font-family: ui-monospace, monospace;
 }
 
 @media print {

@@ -11,7 +11,8 @@ namespace KidsMath.Application.Services;
 
 public class ExerciseSessionService(
     IKidsMathDbContext db,
-    ExerciseGeneratorFactory generatorFactory,
+    SessionQuestionGenerator sessionQuestionGenerator,
+    IRandomNumberSource random,
     ProgressService progressService,
     AchievementService achievementService,
     IOptions<ExerciseOptions> exerciseOptions)
@@ -29,6 +30,7 @@ public class ExerciseSessionService(
         if (definition is null || student is null) return null;
 
         var count = questionCount ?? exerciseOptions.Value.DefaultQuestionCount;
+        var theme = ThemeSelector.PickForStudent(student, random);
         var session = new ExerciseSession
         {
             Id = Guid.NewGuid(),
@@ -40,24 +42,27 @@ public class ExerciseSessionService(
             TotalQuestions = count,
             CorrectAnswers = 0,
             WrongAnswers = 0,
-            Status = SessionStatus.InProgress
+            Status = SessionStatus.InProgress,
+            TemplateThemeId = (int)theme
         };
         db.ExerciseSessions.Add(session);
 
-        for (var i = 1; i <= count; i++)
+        var questions = sessionQuestionGenerator.Generate(definition, count);
+        for (var i = 0; i < questions.Count; i++)
         {
-            var generated = generatorFactory.Generate(definition);
+            var themed = QuestionThemeFormatter.ApplyTheme(theme, questions[i]);
             db.ExerciseAttempts.Add(new ExerciseAttempt
             {
                 Id = Guid.NewGuid(),
                 ExerciseSessionId = session.Id,
                 StudentProfileId = studentId,
                 MathTaskDefinitionId = definition.Id,
-                QuestionOrder = i,
-                GeneratedQuestionJson = JsonSerializer.Serialize(generated.QuestionData, JsonSerializerOptions.Web),
-                QuestionTextCs = generated.QuestionTextCs,
-                QuestionTextEn = generated.QuestionTextEn,
-                CorrectAnswer = generated.CorrectAnswer
+                QuestionOrder = i + 1,
+                GeneratedQuestionJson = JsonSerializer.Serialize(themed.QuestionData, JsonSerializerOptions.Web),
+                QuestionTextCs = themed.QuestionTextCs,
+                QuestionTextEn = themed.QuestionTextEn,
+                TemplateThemeId = (int)themed.Theme,
+                CorrectAnswer = themed.CorrectAnswer
             });
         }
 

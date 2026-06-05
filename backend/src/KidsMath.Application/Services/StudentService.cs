@@ -73,4 +73,22 @@ public class StudentService(IKidsMathDbContext db, JwtTokenService jwt)
 
         return jwt.CreateStudentToken(parentId, student.Id, student.Name);
     }
+
+    public async Task<bool> ResetPinAsync(Guid parentId, Guid studentId, string pin, CancellationToken ct = default)
+    {
+        if (!IsValidPin(pin))
+        {
+            return false;
+        }
+
+        var student = await GetForParentAsync(parentId, studentId, ct);
+        if (student is null) return false;
+
+        student.PinHash = BCrypt.Net.BCrypt.HashPassword(pin);
+        await db.SaveChangesAsync(ct);
+        return true;
+    }
+
+    private static bool IsValidPin(string pin) =>
+        pin.Length is >= 4 and <= 6 && pin.All(char.IsDigit);
 }

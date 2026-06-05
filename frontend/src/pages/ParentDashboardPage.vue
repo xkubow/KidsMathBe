@@ -5,6 +5,16 @@
       <h1>{{ auth.displayName }}</h1>
 
       <button
+        v-if="auth.isAdmin"
+        class="btn btn-ghost btn-block"
+        type="button"
+        :disabled="adminBusy"
+        @click="goToAdmin"
+      >
+        {{ t("adminPanel") }}
+      </button>
+
+      <button
         class="btn btn-primary btn-block"
         @click="router.push({ name: 'parent-add-child' })"
       >
@@ -15,6 +25,9 @@
       <StudentCard v-for="s in students" :key="s.id" :student="s">
         <button class="btn btn-primary" @click="goToPin(s)">
           {{ t("selectChild") }}
+        </button>
+        <button class="btn btn-ghost" @click="resetPin(s)">
+          {{ t("resetPin") }}
         </button>
         <button class="btn btn-ghost" @click="viewHistory(s)">
           {{ t("practiceHistory") }}
@@ -43,12 +56,20 @@ const auth = useAuthStore();
 const router = useRouter();
 const { t } = useI18n();
 const students = ref<Student[]>([]);
+const adminBusy = ref(false);
 
-onMounted(load);
+onMounted(async () => {
+  await auth.refreshProfile().catch(() => {})
+  await load()
+})
 
 async function load() {
-  const { data } = await api.get("/api/students");
-  students.value = data;
+  try {
+    const { data } = await api.get("/api/students");
+    students.value = data;
+  } catch {
+    // 401 redirects to login via api client
+  }
 }
 
 function goToPin(s: Student) {
@@ -58,11 +79,31 @@ function goToPin(s: Student) {
   });
 }
 
+function resetPin(s: Student) {
+  router.push({
+    name: "parent-reset-pin",
+    params: { studentId: s.id },
+    query: { name: s.name, avatar: s.avatarKey ?? "fox", from: "dashboard" },
+  });
+}
+
 function viewHistory(s: Student) {
   router.push({
     name: "parent-session-history",
     params: { studentId: s.id },
     query: { name: s.name },
   });
+}
+
+async function goToAdmin() {
+  adminBusy.value = true;
+  try {
+    await auth.switchToAdmin();
+    router.push({ name: "admin-tasks" });
+  } catch {
+    // 403 shows unauthorized banner; isAdmin flag cleared in api client
+  } finally {
+    adminBusy.value = false;
+  }
 }
 </script>

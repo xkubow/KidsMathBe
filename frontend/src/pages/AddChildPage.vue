@@ -20,9 +20,6 @@
       <input v-model="form.pin" type="password" maxlength="6" minlength="4" required />
 
       <button class="btn btn-primary btn-block" type="submit">{{ t('addChild') }}</button>
-      <button class="btn btn-ghost btn-block" type="button" @click="router.push({ name: 'dashboard' })">
-        ← {{ t('parentDashboard') }}
-      </button>
     </form>
   </div>
 </template>

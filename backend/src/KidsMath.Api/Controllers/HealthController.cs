@@ -1,3 +1,4 @@
+using KidsMath.Contracts.Health;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KidsMath.Api.Controllers;
@@ -7,5 +8,5 @@ namespace KidsMath.Api.Controllers;
 public class HealthController : ControllerBase
 {
     [HttpGet]
-    public IActionResult Get() => Ok(new { status = "healthy", service = "KidsMath.Api" });
+    public ActionResult<HealthResponse> Get() => Ok(new HealthResponse("healthy", "KidsMath.Api"));
 }

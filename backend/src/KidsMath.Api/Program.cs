@@ -4,19 +4,28 @@ using KidsMath.Application.Options;
 using KidsMath.Persistence;
 using KidsMath.Persistence.Seed;
 using KidsMath.Api;
+using KidsMath.Api.Authorization;
+using KidsMath.Application.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<AchievementOptions>(builder.Configuration.GetSection(AchievementOptions.SectionName));
 builder.Services.Configure<ExerciseOptions>(builder.Configuration.GetSection(ExerciseOptions.SectionName));
+builder.Services.Configure<AdminOptions>(builder.Configuration.GetSection(AdminOptions.SectionName));
 
 builder.Services.AddKidsMathApplication();
 builder.Services.AddKidsMathPersistence(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -65,7 +74,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.Requirements.Add(new AdminRequirement()));
+});
+builder.Services.AddSingleton<IAuthorizationHandler, AdminAuthorizationHandler>();
 
 builder.Services.AddCors(options =>
 {
@@ -100,7 +113,12 @@ if (!app.Environment.IsEnvironment("Testing"))
     await DataSeeder.SeedAsync(db);
 }
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Run($"http://0.0.0.0:{port}");
+if(app.Environment.IsDevelopment())
+    app.Run();
+else
+{
+    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+    app.Run($"http://0.0.0.0:{port}");
+}
 
 public partial class Program;

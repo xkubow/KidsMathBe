@@ -10,6 +10,7 @@ public class ExerciseAttempt
     public string GeneratedQuestionJson { get; set; } = "{}";
     public string QuestionTextCs { get; set; } = string.Empty;
     public string QuestionTextEn { get; set; } = string.Empty;
+    public int TemplateThemeId { get; set; }
     public string CorrectAnswer { get; set; } = string.Empty;
     public string? StudentAnswer { get; set; }
     public bool? IsCorrect { get; set; }

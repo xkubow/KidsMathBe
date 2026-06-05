@@ -20,21 +20,19 @@
     </div>
     <div class="no-print actions">
       <button class="btn btn-primary btn-block" @click="printSheet">🖨️ {{ t('printWorksheet') }}</button>
-      <button class="btn btn-ghost btn-block" @click="router.back()">←</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import api from '../api/client'
 import { useAuthStore } from '../stores/authStore'
 import { useI18n } from '../composables/useI18n'
 import { avatarEmoji } from '../constants/avatars'
 
 const route = useRoute()
-const router = useRouter()
 const auth = useAuthStore()
 const { t } = useI18n()
 const avatarKey = localStorage.getItem('activeStudentAvatar') ?? 'fox'

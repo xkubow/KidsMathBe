@@ -3,7 +3,6 @@
     <div class="card">
       <h2>{{ t('practiceHistory') }}</h2>
       <p>{{ childName }}</p>
-      <button class="btn btn-ghost" @click="router.push('/dashboard')">← {{ t('parentDashboard') }}</button>
     </div>
 
     <p v-if="loading">{{ t('loading') }}</p>

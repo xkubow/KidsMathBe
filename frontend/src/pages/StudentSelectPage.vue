@@ -5,9 +5,10 @@
     <p v-if="studentName"><strong>{{ studentName }}</strong></p>
     <label>{{ t('enterPin') }}</label>
     <input v-model="pin" type="password" maxlength="6" inputmode="numeric" class="pin-input" />
+    <p v-if="success" class="feedback-ok">{{ t('pinResetSuccess') }}</p>
     <p v-if="error" class="feedback-warn card-shake">{{ error }}</p>
     <button class="btn btn-primary btn-block" @click="verify">{{ t('startPractice') }}</button>
-    <button class="btn btn-ghost btn-block" @click="backToParent">← {{ t('parentDashboard') }}</button>
+    <button class="btn btn-ghost btn-block" type="button" @click="forgotPin">{{ t('forgotPin') }}</button>
   </div>
 </template>
 
@@ -25,13 +26,21 @@ const auth = useAuthStore()
 const { t } = useI18n()
 const pin = ref('')
 const error = ref('')
+const success = ref(route.query.pinReset === '1')
 const studentId = (route.query.studentId as string) ?? auth.activeStudentId ?? ''
 const studentName = (route.query.name as string) ?? auth.activeStudentName ?? ''
 const avatarKey = (route.query.avatar as string) ?? 'fox'
 
-async function backToParent() {
-  if (auth.isStudentMode) await auth.switchToParent()
-  router.push('/dashboard')
+function forgotPin() {
+  if (!studentId) {
+    error.value = 'Select a child first'
+    return
+  }
+  router.push({
+    name: 'parent-reset-pin',
+    params: { studentId },
+    query: { name: studentName, avatar: avatarKey, from: 'pin' },
+  })
 }
 
 async function verify() {

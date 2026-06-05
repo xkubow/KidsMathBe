@@ -8,14 +8,28 @@ namespace KidsMath.Application.Services;
 
 public class JwtTokenService(IConfiguration configuration)
 {
-    public string CreateParentToken(Guid userId, string email, string displayName)
+    public string CreateParentToken(Guid userId, string email, string displayName, bool isAdmin = false)
     {
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, userId.ToString()),
             new(ClaimTypes.Email, email),
             new(ClaimTypes.Name, displayName),
-            new("token_type", "parent")
+            new("token_type", "parent"),
+            new("is_admin", isAdmin ? "true" : "false")
+        };
+        return CreateToken(claims);
+    }
+
+    public string CreateAdminToken(Guid userId, string email, string displayName)
+    {
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, userId.ToString()),
+            new(ClaimTypes.Email, email),
+            new(ClaimTypes.Name, displayName),
+            new("token_type", "admin"),
+            new("is_admin", "true")
         };
         return CreateToken(claims);
     }

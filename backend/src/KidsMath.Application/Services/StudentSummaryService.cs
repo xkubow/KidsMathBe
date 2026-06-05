@@ -1,4 +1,5 @@
 using KidsMath.Application.Abstractions;
+using KidsMath.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace KidsMath.Application.Services;
@@ -24,11 +25,11 @@ public class StudentSummaryService(
                 s.Id,
                 s.StartedAtUtc,
                 s.FinishedAtUtc,
-                s.TaskType.ToString(),
+                s.TaskType,
                 s.CorrectAnswers,
                 s.WrongAnswers,
                 s.TotalQuestions,
-                s.Status.ToString()))
+                s.Status))
             .ToListAsync(ct);
 
         var totalCorrect = await db.ExerciseAttempts.CountAsync(
@@ -52,11 +53,11 @@ public sealed record SessionBrief(
     Guid Id,
     DateTime StartedAtUtc,
     DateTime? FinishedAtUtc,
-    string TaskType,
+    TaskType TaskType,
     int CorrectAnswers,
     int WrongAnswers,
     int TotalQuestions,
-    string Status);
+    SessionStatus Status);
 
 public sealed record StudentSummary(
     Guid StudentId,

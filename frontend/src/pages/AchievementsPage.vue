@@ -10,20 +10,17 @@
         :description="a.description"
       />
     </div>
-    <button class="btn btn-ghost btn-block" @click="router.push('/student/home')">← {{ t('backHome') }}</button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import api from '../api/client'
 import { useAuthStore } from '../stores/authStore'
 import { useI18n } from '../composables/useI18n'
 import AchievementBadge from '../components/AchievementBadge.vue'
 
 const auth = useAuthStore()
-const router = useRouter()
 const { t } = useI18n()
 const items = ref<{ code: string; displayName: string; description: string }[]>([])
 

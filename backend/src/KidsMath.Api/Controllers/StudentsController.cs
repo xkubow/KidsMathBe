@@ -53,9 +53,16 @@ public class StudentsController(StudentService studentService) : ControllerBase
     public async Task<ActionResult<AuthResponse>> VerifyPin(Guid studentId, VerifyPinRequest request, CancellationToken ct)
     {
         var token = await studentService.VerifyPinAsync(User.GetParentUserId(), studentId, request.Pin, ct);
-        if (token is null) return Unauthorized("Invalid PIN.");
+        if (token is null) return BadRequest("Invalid PIN.");
         var student = await studentService.GetForParentAsync(User.GetParentUserId(), studentId, ct);
         return Ok(new AuthResponse(token, User.GetParentUserId(), "", student!.Name));
+    }
+
+    [HttpPost("{studentId:guid}/reset-pin")]
+    public async Task<IActionResult> ResetPin(Guid studentId, ResetPinRequest request, CancellationToken ct)
+    {
+        var ok = await studentService.ResetPinAsync(User.GetParentUserId(), studentId, request.Pin, ct);
+        return ok ? NoContent() : BadRequest("Invalid PIN or student not found.");
     }
 
     private static StudentResponse Map(Domain.Entities.StudentProfile s) =>

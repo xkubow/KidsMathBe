@@ -141,6 +141,9 @@ namespace KidsMath.Persistence.Migrations
                     b.Property<Guid>("StudentProfileId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("TemplateThemeId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ExerciseSessionId");
@@ -183,6 +186,9 @@ namespace KidsMath.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<int>("TemplateThemeId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("TotalQuestions")
                         .HasColumnType("integer");
@@ -368,6 +374,11 @@ namespace KidsMath.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
+
+                    b.Property<bool>("IsAdmin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()

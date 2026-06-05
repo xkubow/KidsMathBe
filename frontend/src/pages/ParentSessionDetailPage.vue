@@ -4,7 +4,6 @@
       <h2>{{ t('sessionDetail') }}</h2>
       <p>{{ childName }} · {{ formatDate(session.startedAtUtc) }}</p>
       <p class="big-number">{{ session.correctAnswers }} / {{ session.totalQuestions }} ✓</p>
-      <button class="btn btn-ghost" @click="goBack">←</button>
     </div>
 
     <div v-for="a in session.attempts" :key="a.id" class="card question-card">
@@ -29,7 +28,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import api from '../api/client'
 import { useI18n } from '../composables/useI18n'
 
@@ -52,7 +51,6 @@ interface AttemptRow {
 }
 
 const route = useRoute()
-const router = useRouter()
 const { t } = useI18n()
 const childName = (route.query.name as string) ?? ''
 const loading = ref(true)
@@ -78,11 +76,6 @@ function formatDate(iso: string) {
 
 function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString()
-}
-
-function goBack() {
-  const studentId = route.query.studentId as string
-  router.push({ name: 'parent-session-history', params: { studentId }, query: { name: childName } })
 }
 </script>
 
